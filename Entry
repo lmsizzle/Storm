@@ -1,0 +1,197 @@
+//for date format
+import java.text.DateFormat;
+
+//for date
+import java.util.Date;
+
+//for date
+import java.text.SimpleDateFormat;
+
+//for calendar
+import java.util.Calendar;
+
+//for gregorian calendar
+import java.util.GregorianCalendar;
+
+/**
+ * Entry class implement comparable 
+ */
+public class Entry implements Comparable<Entry> 
+{
+
+	//string raw
+	public String raw;
+
+	//start date
+	Date startDate;
+	
+	//end date
+	Date endDate;
+
+	//for finder
+	String[] forFinder;
+	
+	//for summary
+	String[] forSummary;
+
+	//for csv
+	String[] csv;
+
+	/**
+	 * constructor
+	 * @param line string
+	 * @throws Exception
+	 */
+	public Entry(String line) throws Exception 
+	{
+		//sets raw as line
+		raw = line;
+		
+		//sets form as simple date format
+		DateFormat form = new SimpleDateFormat("y-M-d H:m");
+
+		//sets for finder as 10
+		forFinder = new String[10];
+		
+		//sets summary as 6
+		forSummary = new String[6];
+		
+		//sets separation as ,
+		String[] sep = line.split(",");
+
+		//sets csv to separation
+		csv = sep;
+
+		//int = 0, less than 10, increases
+		for(int i=0; i<10; i++)
+		{
+			//sets for finder as separation string
+			forFinder[i] = new String(sep[i]);
+		}
+
+		//sets i equal to 0, less than 6, increases
+		for(int i=0; i<6; i++)
+			
+			//sets summary as separation string 20 + i
+			forSummary[i] = new String(sep[20+i]);
+
+		
+		//to parse string separations 
+		String toParse = sep[0].substring(0, 4) + "-" + sep[0].substring(4, 6) + "-" + sep[1];
+		
+		//sets no to separation 2
+		Integer no = Integer.parseInt(sep[2]);
+		
+		//sets to parse
+		toParse += " " + no/100 + ":" + no%100;
+
+		
+		//try
+		try
+		{
+			//sets start date
+			startDate = form.parse(toParse);
+		}
+		//catches exception
+		catch(Exception e)
+		{
+			//exits
+			System.exit(0);
+		}
+
+		//sets to parse
+		toParse = sep[3].substring(0, 4) + "-" + sep[3].substring(4, 6) + "-" + sep[4];
+		
+		//set no to separation 5
+		no = Integer.parseInt(sep[5]);
+		
+		//sets to parse
+		toParse += " " + no/100 + ":" + no%100;
+
+		//try
+		try
+		{
+			//sets end date
+			endDate = form.parse(toParse);
+		}
+		//catches exception
+		catch(Exception e)
+		{
+			//exits
+			System.exit(0);
+		}
+	}
+	
+	/**
+	 * is time method
+	 * @param year integer
+	 * @return
+	 */
+	public boolean isTime(Integer year)
+	{
+		//sets calendar as gregorian calendar
+		Calendar cal = new GregorianCalendar();
+
+		//sets calendar time to start
+		cal.setTime(startDate);
+		
+		//if calendar year equals year
+		if(cal.get(Calendar.YEAR) == year)
+			
+			//returns true
+			return true;
+		
+		//sets calendar time to end
+		cal.setTime(endDate);
+		
+		//if calendar year equals year
+		if(cal.get(Calendar.YEAR) == year)
+			
+			//returns true
+			return true;
+
+		//returns false
+		return false;
+	}
+
+	/**
+	 * get summary
+	 * @return
+	 */
+	public String[] getSummary()
+	{
+		//returns for summary
+		return forSummary;
+	}
+
+	/**
+	 * get find
+	 * @return
+	 */
+	public String[] getFind()
+	{
+		//returns for finder
+		return forFinder;
+	}
+
+	/**
+	 * get value at
+	 * @param inx integer
+	 * @return
+	 */
+	public String getValAt(int inx)
+	{
+		//returns csv index
+		return csv[inx];
+	}
+
+	/**
+	 * compare to method
+	 */
+	public int compareTo(Entry sec)
+	{
+		//returns
+		return sec.getValAt(1).compareTo(getValAt(1));
+	}
+
+}
