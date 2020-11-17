@@ -1,0 +1,468 @@
+
+//for scanner
+import java.util.Scanner;
+
+//for array list
+import java.util.ArrayList;
+
+/**
+ * data array list class that extends data set
+ * @author Logan
+ *
+ */
+public class DataArrayList extends DataSet
+{
+	
+	//integer for read
+	Integer read;
+	
+	//sets array list entry data
+	ArrayList<Entry> data;
+	
+	/**
+	 * constructor
+	 */
+	public DataArrayList()
+	{
+		//calls super class
+		super();
+		
+		//sets read as 0
+		read = 0;
+		
+		//sets data as array list entry
+		data = new ArrayList<Entry>();
+	}
+
+	/**
+	 * add entry method
+	 */
+	public void addEntry(String line)
+	{
+		//increases read
+		read++;
+		
+		//sets new entry as null
+		Entry newEnt = null;
+		
+		//try
+		try 
+		{
+			//sets new entry as new line
+			newEnt = new Entry(line);
+			}
+		
+		//catches exception
+		catch (Exception e)
+		{
+			//returns
+			return;
+		}
+		
+		//adds new entry
+		data.add(newEnt);
+	}
+	
+	/**
+	 * method for get entry
+	 * @param inx integer
+	 * @return
+	 */
+	public Entry get(int inx)
+	{
+		//returns the index
+		return data.get(inx);
+	} 
+
+	/**
+	 * method for getting size
+	 */
+	public int getSize()
+	{
+		//returns the size
+		return data.size();
+	}
+
+	/**
+	 * method for getting read
+	 */
+	public int getRead()
+	{
+		//returns read
+		return read;
+	}
+
+	/**
+	 * method for string output
+	 */
+	public String output()
+	{
+		//sets out
+		String out = "";
+		
+		//prints out
+		System.out.println("processing...");
+		
+		//if i is 0, i is less than the size, then increase
+		for(int i=0; i<data.size(); i++)
+		{
+			//sets entry as index
+			Entry en = data.get(i);
+			
+			//sets out as the entry
+			out += (en.raw + "\n");
+
+		}
+		
+		//prints out complete
+		System.out.println("Complete");
+		
+		//print out as 
+		out += "Lines read: " + getRead() + "\n Storm records stored: " + getSize() + "\n";
+			
+		//returns out
+		return out;
+	}
+
+	/**
+	 * summary method
+	 */
+	public String summary(int year)
+	{
+		//sets out
+		String out = "";
+
+		//sets array to 4 
+		Integer[] vals = new Integer[4];
+		
+		//when i = 0, less than 4, increase
+		for(int i=0; i<4; i++)
+			
+			//sets value of 0 
+			vals[i] = 0;
+
+		//sets cost as double array
+		Double[] cost = new Double[2];
+		
+		//int = 0, less than 2, increases
+		for(int i=0; i<2; i++)
+			
+			//sets cost as 0.0
+			cost[i] = 0.0;
+		
+		//i = 0, i less than data size, increases
+		for(int i=0; i<data.size(); i++)
+		{
+			
+			//entry data from index
+			Entry en = data.get(i);
+			
+			//if entry time is year
+			if(en.isTime(year))
+			{
+				//summary as entry calls get summary
+				String[] summ = en.getSummary();
+				
+				//ii = 0, ii less than 4, increases
+				for(int ii=0; ii<4; ii++)
+				{
+					//try
+					try
+					{
+						
+						//values array parse summary
+						vals[ii] += Integer.parseInt(summ[ii]);
+					}
+					//catches exception
+					catch (Exception e)
+					{
+
+					}
+				}
+				
+				//ii = 4, ii less than 6, increases
+				for(int ii=4; ii<6; ii++)
+				{
+					
+					//if summary length is 0 or summary equals 0
+					if(summ[ii].length() == 0 || summ[ii].equals(0))
+						
+						//continues
+						continue;
+					
+					//sets modify as 0
+					Integer modif = 0;
+					
+					
+					if(summ[ii].charAt(summ[ii].length()-1) == 'K'){
+						modif = 1000;
+					}
+					//or
+					else 
+					{
+						//modifies
+						modif = 1000*1000;
+					}
+					
+					//sets change as new string summary
+					String change = new String(summ[ii]);
+					
+					//sets change to substring and fixes length
+					change = change.substring(0, change.length()-1);
+					
+					//try
+					try
+					{
+						//cost parses change * modify double
+						cost[ii-4] += Double.parseDouble(change) * (double) modif;
+					}
+					//catches exception
+					catch (Exception e)
+					{
+						//continues
+						continue;
+					}
+				}
+			}
+		}
+
+		//print out format string
+		return String.format("Year: %d; total INJURIES_DIRECT:%d; total INJURIES_INDIRECT: %d; total DEATHS_DIRECT:"
+				+ " %d; total DEATHS_INDIRECT: %d; total DAMAGE_PROPERTY: %fK; total DAMAGE_CROPS: %fK.", year, 
+				vals[0], vals[1], vals[2], vals[3], cost[0]/1000, cost[1]/1000);
+	}
+
+	/**
+	 * find method
+	 */
+	public String find(int id, String value)
+	{
+		//sets out
+		String out = "";
+		
+		//sets counter
+		Integer counter = 0;
+		
+		//i = 0, i less than size, increases
+		for(int i=0; i<data.size(); i++)
+		{
+			//array for find data
+			String[] finder = data.get(i).getFind();
+			
+			//if finder index equals the value
+			if(finder[id].equals(value))
+			{
+				//increases counter
+				counter++;
+				
+				//out as raw data
+				out += data.get(i).raw + "\n";
+			}
+		}
+
+		//returns out, with message, and the string for counter
+		return out + "Storm records: " + Integer.toString(counter);
+	}
+
+	/**
+	 * assess method
+	 */
+	public int assess(int matchID)
+	{
+		//sets how many as 0
+		int howMany = 0;
+		
+		//i = 0, i less than size, increases
+		for(int i=0; i<data.size(); i++)
+		{
+			//if parse integer data from 6 equals the match ID
+			if(Integer.parseInt(data.get(i).getFind()[6]) == matchID )
+				
+				//increases how many
+				howMany++;
+		}
+
+		//returns how many
+		return howMany;
+	}
+
+	/**
+	 * method for deleting entries 
+	 */
+	public void deleteEntries(int matchID)
+	{
+		//sets how many to 0
+		int howMany = 0;
+		
+		//sets found array to size
+		boolean[] found = new boolean[data.size()];
+		
+		//i = 0, i less than size, increases
+		for(int i=0; i<data.size(); i++)
+		{
+			//if parse integer for data found equals match id
+			if(Integer.parseInt(data.get(i).getFind()[6]) == matchID )
+			{
+				//increases how many
+				howMany++;
+				
+				//sets those found as true
+				found[i] = true;
+			}
+			
+			//or
+			else
+				
+				//sets it as false
+				found[i] = false;
+		}
+
+		//if how many = 0
+		if(howMany == 0)
+		{
+			//message telling none found
+			System.out.println("No matching values found");
+			
+			//returns
+			return;
+		}
+
+		//entry array list
+		ArrayList<Entry> newArray = new ArrayList<Entry>();
+		
+		//i = 0, i less than size, increases
+		for(int i=0; i<data.size(); i++)
+		{
+			//if not found
+			if(!found[i])
+			{
+				//gets data
+				newArray.add(data.get(i));
+			}
+		}
+
+		//sets data as new array
+		data = newArray;
+	}
+
+	/**
+	 * sort by method
+	 */
+	public void sortBy(int inx)
+	{
+		//prints out saying what is being sorted by and lists index
+		System.out.println("Starting sort by " + inx + " index");
+		
+		//quick sort data
+		quicksort(data, 0, data.size()-1, inx - 1);
+	}
+	
+	/**
+	 * quicksort method
+	 * @param array
+	 * @param st integer
+	 * @param en integer
+	 * @param inx integer
+	 */
+	void quicksort(ArrayList<Entry> array, int st, int en, int inx)
+	{
+		//if start is less than end
+		if(st < en)
+		{
+			//offset is break up of array, start, end and index
+			int offset = breakUp(array, st, en, inx);
+			
+			//quick sort by subtracting 1 from offset
+			quicksort(array, st, offset - 1, inx);
+			
+			//quick sort by adding 1 to offset
+			quicksort(array, offset + 1, en, inx);
+		}
+	}
+
+	/**
+	 * break up method
+	 * @param array
+	 * @param fl integer
+	 * @param en integer
+	 * @param inx integer
+	 * @return
+	 */
+	int breakUp(ArrayList<Entry> array, int fl, int en, int inx)
+	{
+		//pivot point is array en finding index
+		String pivotPoint = array.get(en).getFind()[inx];
+
+		//decreases
+		fl--;
+		
+		//i = fl + 1, i less than en, increases
+		for(int i=fl+1; i<en; i++)
+		{
+			//sets moveable as getting i and finding index
+			String moveable = array.get(i).getFind()[inx];
+
+			//if less than 0
+			if(sortOut(moveable, pivotPoint, inx) < 0)
+			{
+				//prints out shift
+				System.out.println("Shift");
+				
+				//temp as getting increased fl
+				Entry tmp = array.get(++fl);
+				
+				//sets array as fl array index
+				array.set(fl, array.get(i));
+				
+				//array set
+				array.set(i, tmp);
+			}
+		}
+		
+		//sets temp as array increases fl
+		Entry tmp = array.get(++fl);
+		
+		//sets fl array entry
+		array.set(fl, array.get(en));
+		
+		//sets array entry temp
+		array.set(en, tmp);
+
+		//returns fl
+		return fl;
+	}
+
+	/**
+	 * sort out method
+	 * @param o1 string
+	 * @param o2 string
+	 * @param inx integer
+	 * @return
+	 */
+	static int sortOut(String o1, String o2, int inx)
+	{
+		//if index equals 8
+		if(inx == 8)
+		{
+			
+			//returns o1. compared to o2
+			return o1.compareTo(o2);
+		}
+
+		//sets i1 to o1 and i2 as o2
+		Integer i1 = Integer.parseInt(o1), i2 = Integer.parseInt(o2);
+		
+		//returns the compared i2
+		return i1.compareTo(i2);
+	}
+
+	/**
+	 * main method
+	 * @param args
+	 */
+	public static void main(String[] args)
+	{
+				
+	}
+}
+
