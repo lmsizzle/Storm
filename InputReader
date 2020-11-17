@@ -1,0 +1,68 @@
+//for file
+import java.io.File;
+
+//for file not found
+import java.io.FileNotFoundException;
+
+//for scanner
+import java.util.Scanner;
+
+/**
+ * this class is for the input reader
+ */
+public class InputReader 
+{
+
+
+	/**
+	 * process method
+	 * @param filename string
+	 * @param ds data set
+	 * @return
+	 */
+	public static DataSet process(String filename, DataSet ds)
+	{
+		//sets lines as 0
+		Integer lines = 0;
+		
+		//try
+		try
+		{
+			//creates file
+			File fl = new File(filename);
+			
+			//creates scanner
+			Scanner scan = new Scanner(fl);
+			
+			//prints out message
+			System.out.println("File being processed");
+			
+			//while scanning, goes to next line
+			while(scan.hasNextLine())
+			{
+				//sets line as scan, next line
+				String line = scan.nextLine();
+				
+				//sets data set as add entry line
+				ds.addEntry(line);
+				
+				//increases
+				lines++;
+			}
+		} 
+		//catches exception
+		catch (FileNotFoundException e)
+		{
+			//prints out
+			System.out.println("File was not found");
+			
+			//exits
+			System.exit(0);
+		}
+		//prints out message
+		System.out.println("File processed: " + lines + " lines processed.");
+		
+		//returns data set
+		return ds;
+	}
+}
