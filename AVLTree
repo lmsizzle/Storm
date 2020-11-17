@@ -1,0 +1,317 @@
+
+public class AVLTree {
+	
+	//int used for size
+	int size;
+
+	//root for node 	
+	Node root;
+
+	/**
+	 * Constructor
+	 */
+	AVLTree()
+{
+		//sets root as null
+		root = null;
+		
+		//sets size as 0
+		size = 0;
+	}
+
+	/**
+	 * entry method
+	 * @param nd node
+	 * @param x integer
+	 * @return
+	 */
+	private Entry fetch(Node nd, Integer x)
+	{
+		//if x is 0
+		if(x == 0)
+		{
+			//returns the node value
+			return nd.val;
+		}
+
+		//sets x as x-1
+		x = x-1;
+		
+		//sets n as null
+		Entry n = null;
+		
+		//if left of node is not equal to null
+		if(nd.left != null)
+			
+			//then it fetches the node
+			n = fetch(nd.left, x);
+
+		//if n doesnt equal null
+		if (n != null)
+			
+			//returns it
+			return n;
+		
+		//if right node doesnt equal null
+		if(nd.right != null)
+			
+			//fetches right node and sets it as n
+			n = fetch(nd.right, x);
+
+		//returns it
+		return n;
+
+	}
+	
+	/**
+	 * entry get method
+	 * @param x integer
+	 * @return
+	 */
+	public Entry get(int x)
+	{
+		//returns the fetch 
+		return fetch(root, x);
+	}
+	
+	/**
+	 * add method
+	 * @param entry entry object
+	 */
+	public void add(Entry entry)
+	{
+		//increases
+		size++;
+		
+		//sets root as inserted root entry
+		root = insert(root, entry);
+	}
+
+	/**
+	 * insert node method
+	 * @param pt node
+	 * @param val entry
+	 * @return
+	 */
+	public Node insert(Node pt, Entry val)
+	{
+		//if pt is null
+		if(pt == null)
+			
+			//returns new node with value and pt
+			return new Node(val, pt);
+
+		//if pt val is less than 0
+		if(pt.val.compareTo(val) < 0)
+		{
+			//inserts to left
+			pt.left = insert(pt.left, val);
+
+		}
+		
+		//or
+		else
+		{
+			//insert to right
+			pt.right = insert(pt.right, val);
+		}
+		
+		//updates the height
+		pt.height = update(pt);
+
+		//then sets balance
+		int bal = balance(pt);
+
+		//if balance is greater than 1 and left is less than 0
+		if(bal > 1 && val.compareTo(pt.left.val) < 0)
+			
+			//rotates the right point
+			return rightRotate(pt);
+		
+		//if balance is greater than 1 and left is greater than 0
+		if(bal > 1 && val.compareTo(pt.left.val) > 0)
+		{
+			//rotates the left point
+			pt.left = leftRotate(pt.left);
+			
+			//returns the right rotated point
+			return rightRotate(pt);
+		}
+		
+		//if balance is less than -1 and left is less than 0
+		if(bal < -1 && val.compareTo(pt.left.val) < 0)
+		{
+			//rotates the right point
+			pt.right = rightRotate(pt.right);
+			
+			//returns the left rotate pt
+			return leftRotate(pt);
+		}
+		//if balance is less than -1 and greater than 0
+		if(bal < -1 && val.compareTo(pt.left.val) > 0)
+			
+			//return the left rotate point
+			return leftRotate(pt);
+		
+		//return pt
+		return pt;
+
+	}
+
+	/**
+	 * right rotate method
+	 * @param y node
+	 * @return
+	 */
+	private Node rightRotate(Node y)
+	{
+		//sets x as left y
+        Node x = y.left;
+        
+        //sets temp right x
+        Node tmp = x.right;
+
+        
+        //sets x right as y
+        x.right = y;
+        
+        //sets y left as temp
+        y.left = tmp;
+
+        //updates x height
+        x.height = update(x);
+        
+        //updates y height
+        y.height = update(y);
+
+        //returns x
+        return x;
+    }
+
+	/**
+	 * method for left rotate node
+	 * @param x Node
+	 * @return
+	 */
+    private Node leftRotate(Node x)
+    {
+    	//sets y as right x
+        Node y = x.right;
+        
+        //sets temp node as left y
+        Node tmp = y.left;
+
+        //sets as x
+        y.left = x;
+        
+        //sets as temporary
+        x.right = tmp;
+
+        //updates x height
+        x.height = update(x);
+        
+        //updates y height
+        y.height = update(y);
+
+        //return y
+        return y;
+    }
+
+    /**
+     * update method
+     * @param pt node
+     * @return
+     */
+    private int update(Node pt)
+    {
+    	//returns the max height for left and right +1
+    	return Math.max(height(pt.left), height(pt.right))+1;
+    }
+
+    /**
+     * method for balancing
+     * @param pt node
+     * @return
+     */
+	private int balance(Node  pt)
+	{
+		//if pt is null
+		if (pt == null)
+			
+			//returns 0
+            return 0;
+		
+		//returns height as left minus right
+        return height(pt.left) - height(pt.right);
+	}
+
+	/**
+	 * height method
+	 * @param pt node
+	 * @return
+	 */
+	private int height(Node  pt)
+	{
+		//if pt is null
+		if(pt == null)
+			
+			//returns 0
+			return 0;
+		
+		//returns height
+		return pt.height;
+	}
+
+	/**
+	 * method for size
+	 * @return
+	 */
+	public int size()
+	{
+		//returns size
+		return size;
+	}
+
+}
+
+//class for node
+class Node 
+{
+	//for previous node
+	public Node prev;
+	
+	//for entry value
+	public Entry val;
+	
+	//for left node
+	public Node left;
+	
+	//for right node
+	public Node right;
+	
+	//for height
+	public int height;
+	
+	/**
+	 * constructor
+	 * @param entry object
+	 * @param parent node
+	 */
+	Node(Entry entry, Node parent)
+	{
+		//sets the value as entry
+		val = entry;
+		
+		//sets the previous as the parent
+		prev = parent;
+		
+		//sets left as null
+		left = null;
+		
+		//sets right as null
+		right = null;
+		
+		//sets height to 1
+		height = 1;
+	}
+}
