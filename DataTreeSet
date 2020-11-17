@@ -1,0 +1,363 @@
+//for arrays
+import java.util.Arrays;
+
+//for scanner
+import java.util.Scanner;
+
+//for tree set
+import java.util.TreeSet;
+
+//for iterator
+import java.util.Iterator;
+
+
+/**
+ * class for data tree set extends data set
+ */
+public class DataTreeSet extends DataSet{
+
+	//integer for read
+	Integer read;
+	
+	//tree set entry data
+	TreeSet<Entry> data;
+
+	/**
+	 * constructor
+	 */
+	public DataTreeSet()
+	{
+		//calls super
+		super();
+		
+		//sets read as 0
+		read = 0;
+		
+		//sets data as tree set entry
+		data = new TreeSet<Entry>();
+	}
+
+	/**
+	 * add entry method
+	 */
+	public void addEntry(String line)
+	{
+		//increases read
+		read++;
+
+		//sets new entry to null
+		Entry newEnt = null;
+		
+		//try
+		try 
+		{
+			
+			//sets new entry line
+			newEnt = new Entry(line);
+		}
+		//catches exception
+		catch (Exception e)
+		{
+			//returns
+			return;
+		}
+
+		//adds new entry
+		data.add(newEnt);
+	}
+
+	/**
+	 *get size method 
+	 */
+	public int getSize()
+	{
+		//return size
+		return data.size();
+	}
+
+	/**
+	 * get read method 
+	 */
+	public int getRead()
+	{
+		//returns read
+		return read;
+	}
+
+	/**
+	 * out put method 
+	 */
+	public String output()
+	{
+		//sets out
+		String out = "";
+		
+		//prints out message
+		System.out.println("Processing...");
+		
+		//iterator equals iterator data, has next
+		for(Iterator<Entry> it = data.iterator(); it.hasNext(); )
+		{
+			//entry as next iterator
+			Entry en = it.next();
+			
+			//sets out
+			out += (en.raw + "\n");
+
+		}
+		
+		//prints out message
+		System.out.println("Processed");
+		
+		//sets out
+		out += "Data lines read: " + getRead() + "; Storm records in memory: " + getSize() + "\n";
+			
+		//prints out 
+		return out;
+	}
+
+	/**
+	 * summary method 
+	 */
+	public String summary(int year)
+	{
+		//prints out
+		String out = "";
+
+		//sets values as 4
+		Integer[] vals = new Integer[4];
+		
+		//i equals 0, less than 4, increases
+		for(int i=0; i<4; i++)
+			
+			//sets i as 0
+			vals[i] = 0;
+
+		//sets cost to 2
+		Double[] cost = new Double[2];
+		
+		//equals 0, less than 2, increases
+		for(int i=0; i<2; i++)
+			
+			//sets cost
+			cost[i] = 0.0;
+		
+		// iterator as  next iterator
+		for(Iterator<Entry> it = data.iterator(); it.hasNext();){
+			
+			//sets entry as next interator
+			Entry en = it.next();
+			
+			//if entry time is year
+			if(en.isTime(year))
+			
+			{
+				//sets summary as entry get summary
+				String[] summ = en.getSummary();
+				
+				//ii equals 0, less than 4, increases
+				for(int ii=0; ii<4; ii++)
+				{
+					//try
+					try
+					{
+						//sets ii as parse int summ ii
+						vals[ii] += Integer.parseInt(summ[ii]);
+					}
+					//catches exception
+					catch (Exception e)
+					{
+
+					}
+				}
+				
+				//ii equals 4, less than 6, increases
+				for(int ii=4; ii<6; ii++)
+				{
+					//if summary ii length equals 0
+					if(summ[ii].length() == 0 || summ[ii].equals(0))
+						
+						//continues
+						continue;
+					
+					//sets modify
+					Integer modif = 0;
+					
+					//if summary length -1 equals k
+					if(summ[ii].charAt(summ[ii].length()-1) == 'K')
+					{
+						//sets modify to 1000
+						modif = 1000;
+					}
+					
+					//or
+					else 
+					{
+						//sets modify
+						modif = 1000*1000;
+					}
+					//sets change
+					String change = new String(summ[ii]);
+					
+					//sets change
+					change = change.substring(0, change.length()-1);
+					
+					//try
+					try
+					{
+						//sets cost
+						cost[ii-4] += Double.parseDouble(change) * (double) modif;
+					} 
+					//catches
+					catch (Exception e)
+					{
+						//continues
+						continue;
+					}
+				}
+			}
+		}
+		// sets string format
+		return String.format("Year: %d; total INJURIES_DIRECT:%d; total INJURIES_INDIRECT: %d; total DEATHS_DIRECT:"
+				+ " %d; total DEATHS_INDIRECT: %d; total DAMAGE_PROPERTY: %fK; total DAMAGE_CROPS: %fK.", year, vals[0],
+				vals[1], vals[2], vals[3], cost[0]/1000, cost[1]/1000);
+	}
+
+	/**
+	 * find method
+	 */
+	public String find(int id, String value)
+	{
+		//sets out
+		String out = "";
+		
+		//sets counter
+		Integer counter = 0;
+		
+		//sets iteration as data next iterator
+		for(Iterator<Entry> it = data.iterator(); it.hasNext();)
+		{
+			//sets entry as next iterator
+			Entry et = it.next();
+			
+			//sets finder as entry finder
+			String[] finder = et.getFind();
+			
+			//if finder id equals value
+			if(finder[id].equals(value))
+			{
+				
+				//increases counter
+				counter++;
+				
+				//sets out 
+				out += et.raw + "\n";
+			}
+		}
+		
+		//returns out
+		return out + "Storm records found: " + Integer.toString(counter);
+	}
+
+	/**
+	 * assess method
+	 */
+	public int assess(int matchID)
+	{
+		//sets how many
+		int howMany = 0;
+		
+		//sets iterator as next
+		for(Iterator<Entry> it = data.iterator(); it.hasNext(); )
+		{
+			//if parse next iterator equals match id
+			if(Integer.parseInt(it.next().getFind()[6]) == matchID )
+				
+				//increases how many
+				howMany++;
+		}
+
+		//returns how many
+		return howMany;
+	}
+
+	/**
+	 * delete entries method
+	 */
+	public void deleteEntries(int matchID)
+	{
+		//sets how many
+		int howMany = 0;
+		
+		//sets i to 0
+		int i = 0;
+		
+		//sets found as data size
+		boolean[] found = new boolean[data.size()];
+		
+		// iterator as next iterator, increases
+		for(Iterator<Entry> it = data.iterator(); it.hasNext(); i++)
+		{
+			//entry equals next iterator
+			Entry et = it.next();
+			
+			//if parse integer entry equals match id
+			if(Integer.parseInt(et.getFind()[6]) == matchID )
+			{
+				
+				//increases how many
+				howMany++;
+				
+				//is true
+				found[i] = true;
+			}
+			
+			//or
+			else
+				//is false
+				found[i] = false;
+		}
+		//if how many equals 0
+		if(howMany == 0)
+		{
+			
+			//prints out message
+			System.out.println("No matching values found");
+			return;
+		}
+
+		//sets i as 0
+		i = 0;
+
+		//tree set entry
+		TreeSet<Entry> newArray = new TreeSet<Entry>();
+		
+		//iterator as next iterator, increases
+		for(Iterator<Entry> it = data.iterator(); it.hasNext(); i++)
+		{
+			
+			//sets entry as next iterator
+			Entry et = it.next();
+			
+			//if not found
+			if(!found[i])
+			{
+				//adds entry
+				newArray.add(et);
+			}
+		}
+		//sets data as new array
+		data = newArray;
+	}
+	
+	/**
+	 * sort by method 
+	 */
+	public void sortBy(int inx)
+	{
+		//prints out message and index
+		System.out.println("Starting sort by " + inx + " index");
+	}
+
+}
+
